@@ -32,7 +32,7 @@ const UserForm = () => {
 
     if (formIsValid) {
       try {
-        const response = await axios.post('http://localhost:5000/register', {
+        const response = await axios.post('https://user-and-address-backend.onrender.com/register', {
           name,
           address,
         });
