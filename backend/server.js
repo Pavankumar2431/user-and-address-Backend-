@@ -1,7 +1,7 @@
-// server.js
 const express = require('express');
 const mysql = require('mysql2');
 const bodyParser = require('body-parser');
+require('dotenv').config();
 const cors = require('cors');
 
 const app = express();
@@ -12,17 +12,21 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// MySQL connection
+// MySQL connection (local first, then AWS RDS)
 const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root', // Replace with your MySQL username
-  password: 'pavankumar', // Replace with your MySQL password
-  database: 'user_address_db'
+  host: process.env.DB_HOST || 'localhost', // Use environment variable or default to local
+  user: process.env.DB_USER || 'root', // Use environment variable or default to local user
+  password: process.env.DB_PASSWORD || 'pavankumar', // Use environment variable or default to local password
+  database: process.env.DB_NAME || 'user_address_db', // Use environment variable or default to local database
+  port: process.env.DB_PORT || 3306, // Default to MySQL port
 });
 
 // Connect to MySQL
 db.connect((err) => {
-  if (err) throw err;
+  if (err) {
+    console.error('Error connecting to MySQL:', err);
+    return;
+  }
   console.log('MySQL Connected...');
 });
 
